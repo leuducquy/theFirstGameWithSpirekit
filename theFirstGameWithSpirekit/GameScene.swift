@@ -43,7 +43,7 @@ class GameScene: SKScene {
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
        backgroundColor = SKColor.whiteColor()
-        player.position = CGPointMake(size.width * 0.1, size.height * 0.5)
+        player.position = CGPointMake(size.width * 0.5, player.size.height * 0.5)
         self.addChild(player)
         runAction(SKAction.repeatActionForever(
             SKAction.sequence([
@@ -67,7 +67,7 @@ class GameScene: SKScene {
         let offset = touchLocation - projectile.position
         
         // 4 - Bail out if you are shooting down or backwards
-        if (offset.x < 0) { return }
+      //  if (offset.x < 0) { return }
         
         // 5 - OK to add now - you've double checked position
         addChild(projectile)
@@ -90,16 +90,17 @@ class GameScene: SKScene {
         return CGFloat(Float(arc4random() / 0xFFFFFFF))
     }
     func random(#min : CGFloat, max:CGFloat) ->CGFloat{
-        return random() * (max - min) + min
+        return CGFloat(arc4random_uniform(UInt32(min)) %  UInt32(max))
     }
     func addMonster(){
         // create sprite
         let monster = SKSpriteNode(imageNamed: "monster")
-        let actualY = random(min: monster.size.height  * 0.5, max: size.height  - monster.size.height * 0.5)
-        monster.position = CGPoint(x:size.width + monster.size.width * 0.5, y : actualY)
+        let actualX = random(min: monster.size.width * 0.5, max: size.width  )
+        monster.position = CGPoint(x:actualX, y : size.height)
         addChild(monster)
         let actualDuration = random(min: CGFloat(2.0), max:CGFloat(4.0))
-        let actionMove = SKAction.moveTo(CGPoint(x: -monster.size.width/2, y: actualY), duration: NSTimeInterval(actualDuration))
+        let actionMove = SKAction.moveTo(CGPoint(x: player.position.x
+            , y: player.position.y), duration: NSTimeInterval(actualDuration))
         let actionMoveDone = SKAction.removeFromParent()
         monster.runAction(SKAction.sequence([actionMove, actionMoveDone]))
     }
